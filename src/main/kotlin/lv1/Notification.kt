@@ -24,27 +24,9 @@ class Notification {
     }
 
     private fun solution(id_list: Array<String>, reports: Array<String>, k: Int): IntArray {
-        val a = reports.map { it.split(" ") }
-        println("a = $a")
-        val b = a.groupBy { it[1] }
-        println("b = $b")
-//        val c = b.asSequence()
-//        println("c = $c")
-        val d = b.map { it.value.distinct() }
-        println("d = $d")
-        val e = d.filter { it.size >= k }
-        println("e = $e")
-        val e1 = e.flatten()
-        println("e1 = $e1")
-        val f = e1.map { it[0] }
-        println("f = $f")
-        val g = f.groupingBy { it }
-        println("g = $g")
-        val h = g.eachCount()
-        println("h = $h")
         return reports.map { it.split(" ") }
             .groupBy { it[1] }
-//            .asSequence()
+            .asSequence()
             .map { it.value.distinct() }
             .filter { it.size >= k }
             .flatten()

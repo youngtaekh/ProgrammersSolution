@@ -9,6 +9,7 @@ class RoomCount {
 
         for (case in testCase) {
             println(solution(case))
+            println(solution2(case))
         }
     }
 
@@ -57,5 +58,91 @@ class RoomCount {
         path[next to cur] = true
         println(".")
         return x to y
+    }
+
+    private fun solution2(arrows: IntArray): Int {
+        var answer = 0
+        var cPoint = 0 to 0
+        val points = mutableListOf(cPoint)
+        //draw lines
+        arrows.forEach {
+            when (it) {
+                0 -> {
+                    cPoint = cPoint.first to cPoint.second+1
+                    points.add(cPoint)
+                }
+                1 -> {
+                    cPoint = cPoint.first+1 to cPoint.second+1
+                    points.add(cPoint)
+                }
+                2 -> {
+                    cPoint = cPoint.first+1 to cPoint.second
+                    points.add(cPoint)
+                }
+                3 -> {
+                    cPoint = cPoint.first+1 to cPoint.second-1
+                    points.add(cPoint)
+                }
+                4 -> {
+                    cPoint = cPoint.first to cPoint.second-1
+                    points.add(cPoint)
+                }
+                5 -> {
+                    cPoint = cPoint.first-1 to cPoint.second-1
+                    points.add(cPoint)
+                }
+                6 -> {
+                    cPoint = cPoint.first-1 to cPoint.second
+                    points.add(cPoint)
+                }
+                7 -> {
+                    cPoint = cPoint.first-1 to cPoint.second+1
+                    points.add(cPoint)
+                }
+            }
+        }
+        points.forEach { println(it) }
+        println("----")
+        //find connected line
+        val paths = mutableMapOf<Pair<Int, Int>, MutableList<Pair<Int, Int>>>()
+        points.mapIndexed { index, pair ->
+            if (paths[pair] == null) {
+                paths[pair] = mutableListOf()
+            }
+            if (index != 0) {
+                paths[pair]!!.add(points[index - 1])
+            }
+            if (index != points.size - 1) {
+                paths[pair]!!.add(points[index + 1])
+            }
+        }
+        paths.forEach { println(it) }
+
+        val closedAreaList = mutableListOf<MutableList<Pair<Int, Int>>>()
+        points
+            .filterIndexed { index, pair ->
+                index == 0 ||
+                        index == points.size - 1 ||
+                        pair.first - points[index-1].first != points[index+1].first - pair.first ||
+                        pair.second - points[index-1].second != points[index+1].second - pair.second
+            }
+            .map {
+                val closedArea = mutableListOf(it)
+                var check = true
+                while (check) {
+                    var nextPoint: Pair<Int, Int>? = null
+                    for (point in paths[it]!!) {
+                        if (closedArea.size > 1 && closedArea[closedArea.size-2] != point) {
+                            nextPoint = point
+                        }
+                    }
+                    if (nextPoint == it) {
+                        check = false
+                    } else if (arrows.size < closedArea.size) {
+                        check = false
+                    }
+                }
+            }
+        return answer
     }
 }
